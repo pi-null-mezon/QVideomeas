@@ -11,3 +11,5 @@ QVideomeas
 1) [Opencv](https://github.com/opencv/opencv)
 
 2) [Qt](https://www.qt.io/download-open-source/)
+
+3) [vpglib](https://github.com/pi-null-mezon/vpglib)
