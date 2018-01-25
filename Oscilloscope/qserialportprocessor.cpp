@@ -50,6 +50,7 @@ bool QSerialPortProcessor::openSerialPortSelectDialog()
      {
          m_serialInfo = ports[combobox.currentIndex()];
          m_deviceFlag = true;
+         open();
      }
      else
      {
@@ -106,16 +107,19 @@ bool QSerialPortProcessor::open()
 bool QSerialPortProcessor::opendefault()
 {
     QList<QSerialPortInfo> l_ports = QSerialPortInfo::availablePorts();
-    qInfo("Follow COM ports have been found:");
-    for(int i = 0; i < l_ports.size(); i++) {
-        qInfo("%d) %s %s", i, l_ports[i].portName().toLocal8Bit().constData(), l_ports[i].description().toLocal8Bit().constData());
-        if(l_ports[i].description().contains("CH340")) {
-            m_serialInfo = l_ports[i];
-            m_deviceFlag = true;
-            break;
+    if(l_ports.size() > 0) {
+        qInfo("Following COM ports have been found:");
+        for(int i = 0; i < l_ports.size(); i++) {
+            qInfo("%d) %s %s", i, l_ports[i].portName().toLocal8Bit().constData(), l_ports[i].description().toLocal8Bit().constData());
+            if(l_ports[i].description().contains("CH340")) {
+                m_serialInfo = l_ports[i];
+                m_deviceFlag = true;
+                break;
+            }
         }
+    } else {
+        qInfo("No COM ports have been found!");
     }
-
     return open();
 }
 

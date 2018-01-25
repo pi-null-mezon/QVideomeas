@@ -79,10 +79,10 @@ void QOpencvProcessor::searchFace(const cv::Mat &img)
             temp = img;
         }
         cv::Rect imgRect(0,0,temp.cols,temp.rows);
-        centralRegion = __scaleRectfromCenter(imgRect, 0.5, 1.0) & imgRect;
-        faceDestinationRect = __scaleRectfromCenter(imgRect, 0.28, 0.5);
-        outerRect = __scaleRectfromCenter(faceDestinationRect, 1.35f,1.35f);
-        innerRect = __scaleRectfromCenter(faceDestinationRect, 0.75f, 0.75f);
+        centralRegion = __portionRectfromCenter(imgRect, 0.5, 1.0) & imgRect;
+        faceDestinationRect = __portionRectfromCenter(imgRect, 0.28, 0.5);
+        outerRect = __portionRectfromCenter(faceDestinationRect, 1.35f,1.35f);
+        innerRect = __portionRectfromCenter(faceDestinationRect, 0.75f, 0.75f);
     } else {
         if(img.cols >= 1024 && img.rows >= 768) {
             cv::resize(img, temp, cv::Size(640,480), 0.0, 0.0, CV_INTER_AREA);
@@ -92,15 +92,15 @@ void QOpencvProcessor::searchFace(const cv::Mat &img)
             temp = img;
         }
         cv::Rect imgRect(0,0,temp.cols,temp.rows);
-        centralRegion = __scaleRectfromCenter(imgRect, 0.5, 1.0) & imgRect;
-        faceDestinationRect = __scaleRectfromCenter(imgRect, 0.35, 0.5);
-        outerRect = __scaleRectfromCenter(faceDestinationRect, 1.35f,1.35f);
-        innerRect = __scaleRectfromCenter(faceDestinationRect, 0.75f, 0.75f);
+        centralRegion = __portionRectfromCenter(imgRect, 0.5, 1.0) & imgRect;
+        faceDestinationRect = __portionRectfromCenter(imgRect, 0.35, 0.5);
+        outerRect = __portionRectfromCenter(faceDestinationRect, 1.35f,1.35f);
+        innerRect = __portionRectfromCenter(faceDestinationRect, 0.75f, 0.75f);
     }
 
 
     std::vector<cv::Rect> v_objects;
-    m_classifier.detectMultiScale(temp(centralRegion), v_objects, 1.1, 5, CV_HAAR_FIND_BIGGEST_OBJECT, cv::Size(72,96));
+    m_classifier.detectMultiScale(temp(centralRegion), v_objects, 1.25, 5, CV_HAAR_FIND_BIGGEST_OBJECT, cv::Size(100,100));
     for(uint i = 0; i < v_objects.size(); i++) {
         v_objects[i] += centralRegion.tl();
     }
@@ -157,7 +157,7 @@ void QOpencvProcessor::__updateFaceRects(const cv::Rect &rect)
         m_beginFlag = false;
     } else {
         v_faceRects[m_facesPos] = rect;
-        m_facesPos = (++m_facesPos) % LENGTH_OF_FACE_RECTS_VECTOR;
+        m_facesPos = (m_facesPos+1) % LENGTH_OF_FACE_RECTS_VECTOR;
     }
 }
 
@@ -196,9 +196,9 @@ bool QOpencvProcessor::__isRectInsideField(const cv::Rect &rect, const cv::Rect 
 
 //------------------------------------------------------------------------------------------------------
 
-cv::Rect QOpencvProcessor::__scaleRectfromCenter(const cv::Rect &rect, float scaleX, float scaleY) const
+cv::Rect QOpencvProcessor::__portionRectfromCenter(const cv::Rect &rect, float portionX, float portionY) const
 {
-    cv::Rect outputRect = cv::Rect(rect.x, rect.y, rect.width*scaleX, rect.height*scaleY);
+    cv::Rect outputRect = cv::Rect(rect.x, rect.y, rect.width*portionX, rect.height*portionY);
     cv::Point shift = outputRect.br() - rect.br();
     outputRect -= shift/2.0;
     return outputRect;

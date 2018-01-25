@@ -43,10 +43,11 @@ void QImageWidget::updateImage(const cv::Mat& image, double frame_period)
 //------------------------------------------------------------------------------------
 void QImageWidget::paintEvent(QPaintEvent* )
 {
+    QPainter painter(this);
     if(!m_qtImage.isNull()) {
-
         __updateViewRect();
         QPainter painter( this );        
+        painter.fillRect(rect(),Qt::black);
         painter.drawImage(m_viewRect, m_qtImage); // Draw inside widget, the image is scaled to fit the rectangle
         painter.setRenderHint(QPainter::Antialiasing);
 
@@ -55,6 +56,20 @@ void QImageWidget::paintEvent(QPaintEvent* )
         __drawTemperature(painter, m_viewRect);
         __drawVPGSignal(painter, m_viewRect);
         __drawHR(painter, m_viewRect);
+    } else {
+        painter.setRenderHint(QPainter::Antialiasing);
+        QPainterPath _path;
+        qreal pointsize = (qreal)rect().height() / 20.0;
+        QFont font("Calibry", pointsize, QFont::Bold);
+        QPen pen(Qt::NoBrush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        pen.setColor(QColor(0,0,0));
+        painter.setPen( pen );
+        painter.setBrush(Qt::white);
+        QString _str = tr("Calibration in progress...");
+        _path.addText(0,0,font,_str);
+        painter.translate((rect().width() - _str.length()*pointsize),rect().height()/2.0);
+        painter.setBrush(Qt::white);
+        painter.drawPath(_path);
     }
 }
 //------------------------------------------------------------------------------------

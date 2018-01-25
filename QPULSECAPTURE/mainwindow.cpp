@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent):
     createMenus();
     adjustSettings();
     //--------------------------------------------------------------
-    resize(640,400);
+    setMinimumSize(640,480);
     pt_fullscreenAct->trigger();
     statusBar()->showMessage(tr("Context menu is available by right click"));
 }
@@ -28,7 +28,7 @@ void MainWindow::adjustSettings()
     m_tempplot.setParent(this);
     m_tempplot.setWindowFlags(Qt::Window);
     m_tempplot.set_axis_names(tr("Time, quarter of s"), tr("Temperature, °C"));
-    m_tempplot.set_vertical_Borders(29.3, 37.3);
+    m_tempplot.set_vertical_Borders(29.3, 37.3); // degrees of Celsius
     m_tempplot.setEnableGradient(true);
     m_tempplot.setDrawSecondArray(false);
     //--------------------------------------------------------------
@@ -38,6 +38,7 @@ void MainWindow::adjustSettings()
 
 MainWindow::~MainWindow()
 {
+    __disconnectobjects();
     // Do not move into closeEvent handler because it may cause deadlocks on close
     pt_videoThread->exit();
     pt_videoThread->wait();
@@ -68,6 +69,42 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             showFullScreen();
             break;
     }
+}
+
+void MainWindow::__connectobjects()
+{
+    __disconnectobjects();
+
+    connect(pt_videoCapture,    SIGNAL(frame_was_captured(cv::Mat)), pt_pulseproc, SLOT(enrollFrame(cv::Mat)), Qt::BlockingQueuedConnection);
+    connect(pt_pulseproc,       SIGNAL(vpgUpdated(const double*,int)), pt_display, SLOT(updateVPGSignal(const double*,int)));
+    connect(pt_pulseproc,       SIGNAL(hrUpdated(double,double)), pt_display, SLOT(updateHR(double,double)));
+
+    connect(pt_videoCapture,    SIGNAL(frame_was_captured(cv::Mat)), pt_opencvProcessor, SLOT(searchFace(cv::Mat)),Qt::BlockingQueuedConnection);
+    connect(pt_opencvProcessor, SIGNAL(frame_was_processed(cv::Mat,double)), pt_display, SLOT(updateImage(cv::Mat,double)),Qt::BlockingQueuedConnection);
+    connect(pt_temperatureProcessor, SIGNAL(objtempUpdated(qreal)), pt_display, SLOT(updateTemperature(qreal)));
+    connect(pt_opencvProcessor, SIGNAL(statusChanged(QString)), pt_display, SLOT(updateStatus(QString)));
+    connect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_display, SLOT(decreaseStringShift()));
+    connect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_display, SLOT(increaseStringShift()));
+    connect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_pulseproc, SLOT(setFaceInPosiiton()));
+    connect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_pulseproc, SLOT(setFaceOutOfPosition()));
+    connect(pt_temperatureProcessor, SIGNAL(dataProcessed(const qreal*,const qreal*,quint16)), &m_tempplot, SLOT(set_externalArrays(const qreal*,const qreal*,quint16)));
+}
+
+void MainWindow::__disconnectobjects()
+{
+    disconnect(pt_videoCapture,    SIGNAL(frame_was_captured(cv::Mat)), pt_pulseproc, SLOT(enrollFrame(cv::Mat)));
+    disconnect(pt_pulseproc,       SIGNAL(vpgUpdated(const double*,int)), pt_display, SLOT(updateVPGSignal(const double*,int)));
+    disconnect(pt_pulseproc,       SIGNAL(hrUpdated(double,double)), pt_display, SLOT(updateHR(double,double)));
+
+    disconnect(pt_videoCapture,    SIGNAL(frame_was_captured(cv::Mat)), pt_opencvProcessor, SLOT(searchFace(cv::Mat)));
+    disconnect(pt_opencvProcessor, SIGNAL(frame_was_processed(cv::Mat,double)), pt_display, SLOT(updateImage(cv::Mat,double)));
+    disconnect(pt_temperatureProcessor, SIGNAL(objtempUpdated(qreal)), pt_display, SLOT(updateTemperature(qreal)));
+    disconnect(pt_opencvProcessor, SIGNAL(statusChanged(QString)), pt_display, SLOT(updateStatus(QString)));
+    disconnect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_display, SLOT(decreaseStringShift()));
+    disconnect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_display, SLOT(increaseStringShift()));
+    disconnect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_pulseproc, SLOT(setFaceInPosiiton()));
+    disconnect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_pulseproc, SLOT(setFaceOutOfPosition()));
+    disconnect(pt_temperatureProcessor, SIGNAL(dataProcessed(const qreal*,const qreal*,quint16)), &m_tempplot, SLOT(set_externalArrays(const qreal*,const qreal*,quint16)));
 }
 //------------------------------------------------------------------------------------
 
@@ -172,12 +209,9 @@ void MainWindow::createThreads()
     pt_videoCapture->moveToThread(pt_videoThread);
     connect(pt_videoThread, SIGNAL(started()), pt_videoCapture, SLOT(initializeTimer()));
     connect(pt_videoThread, SIGNAL(finished()), pt_videoCapture, SLOT(close()));
-    connect(pt_videoThread, SIGNAL(finished()), pt_videoCapture, SLOT(deleteLater()));
-    connect(pt_videoThread, SIGNAL(started()), pt_videoCapture, SLOT(opendefaultdevice()));
-    connect(pt_videoCapture, SIGNAL(deviceOpened()), pt_videoCapture, SLOT(resume()));
+    connect(pt_videoThread, SIGNAL(finished()), pt_videoCapture, SLOT(deleteLater()));   
 
     //---------------------QSerialPortProcessor and QTemperatureProcessor--------------------
-    // QSerialPortProcessor should live in the main GUI Thread
     pt_serialProcessor = new QSerialPortProcessor(this);
     pt_temperatureProcessor = new QTemperatureProcessor(this);
     pt_serialProcessor->opendefault();
@@ -185,33 +219,22 @@ void MainWindow::createThreads()
 
     //---------------------QPulseProcessor--------------------------
     pt_vpgThread = new QThread(this);
-    pt_pulseproc = new QPulseProcessor(NULL);
+    pt_pulseproc = new QPulseProcessor();
     pt_pulseproc->moveToThread(pt_vpgThread);
     connect(pt_vpgThread, SIGNAL(finished()), pt_pulseproc, SLOT(deleteLater()));
-    connect(pt_vpgThread, SIGNAL(started()), pt_pulseproc, SLOT(dropTimer()));
 
-    //----------Register openCV types in Qt meta-type system---------
-    qRegisterMetaType<cv::Mat>("cv::Mat");
-    qRegisterMetaType<cv::Rect>("cv::Rect");
-
-    //----------------------Connections------------------------------
-    connect(pt_videoCapture, SIGNAL(frame_was_captured(cv::Mat)), pt_opencvProcessor, SLOT(searchFace(cv::Mat)),Qt::BlockingQueuedConnection);
-    connect(pt_opencvProcessor, SIGNAL(frame_was_processed(cv::Mat,double)), pt_display, SLOT(updateImage(cv::Mat,double)), Qt::BlockingQueuedConnection);
-    connect(pt_temperatureProcessor, SIGNAL(objtempUpdated(qreal)), pt_display, SLOT(updateTemperature(qreal)));
-    connect(pt_opencvProcessor, SIGNAL(statusChanged(QString)), pt_display, SLOT(updateStatus(QString)));
-    connect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_display, SLOT(decreaseStringShift()));
-    connect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_display, SLOT(increaseStringShift()));
-    connect(pt_opencvProcessor, SIGNAL(rightPosition()), pt_pulseproc, SLOT(setFaceInPosiiton()));
-    connect(pt_opencvProcessor, SIGNAL(outofFrame()), pt_pulseproc, SLOT(setFaceOutOfPosition()));
-    connect(pt_temperatureProcessor, SIGNAL(dataProcessed(const qreal*,const qreal*,quint16)), &m_tempplot, SLOT(set_externalArrays(const qreal*,const qreal*,quint16)));
-    connect(pt_videoCapture, SIGNAL(frame_was_captured(cv::Mat)), pt_pulseproc, SLOT(enrollFrame(cv::Mat)), Qt::BlockingQueuedConnection);
-    connect(pt_pulseproc, SIGNAL(vpgUpdated(const double*,int)), pt_display, SLOT(updateVPGSignal(const double*,int)));
-    connect(pt_pulseproc, SIGNAL(hrUpdated(double,double)), pt_display, SLOT(updateHR(double,double)));
+    // Initialization routine
+    connect(pt_videoCapture, SIGNAL(timerInitialized()), pt_videoCapture, SLOT(opendefaultdevice()));
+    connect(pt_videoCapture, SIGNAL(deviceFPSChanged()), pt_videoCapture, SLOT(resume()));
+    connect(pt_videoCapture, SIGNAL(deviceFPSChanged()), pt_videoCapture, SLOT(measureActualFPS()));
+    connect(pt_videoCapture, SIGNAL(fpsMeasured(double)), pt_pulseproc, SLOT(initialize(double)));
+    connect(pt_pulseproc, SIGNAL(initialized()), this, SLOT(__connectobjects()));
 
     //----------------------Thread start-----------------------------
     pt_vpgThread->start();
     pt_improcThread->start();
     pt_videoThread->start();
+
     //---------------------------------------------------------------
     QTimer::singleShot(8000, this, SLOT(__connectToClose()));
 }
@@ -267,6 +290,7 @@ bool MainWindow::opendevice()
         }
     }
     pt_resumeAct->trigger();
+    QTimer::singleShot(0,pt_videoCapture,SLOT(measureActualFPS()));
     return true;
 }
 
@@ -318,24 +342,6 @@ void MainWindow::show_help()
     }
 }
 
-//------------------------------------------------------------------------------------
-
-void MainWindow::closeEvent(QCloseEvent *_event)
-{
-    disconnect(pt_videoCapture, SIGNAL(frame_was_captured(cv::Mat)), pt_pulseproc, SLOT(enrollFrame(cv::Mat)));
-    disconnect(pt_videoCapture, SIGNAL(frame_was_captured(cv::Mat)), pt_opencvProcessor, SLOT(searchFace(cv::Mat)));
-    disconnect(pt_opencvProcessor, SIGNAL(frame_was_processed(cv::Mat,double)), pt_display, SLOT(updateImage(cv::Mat,double)));
-
-    disconnect(pt_temperatureProcessor, SIGNAL(objtempUpdated(qreal)), pt_display, SLOT(updateTemperature(qreal)));
-    disconnect(pt_temperatureProcessor, SIGNAL(dataProcessed(const qreal*,const qreal*,quint16)), &m_tempplot, SLOT(set_externalArrays(const qreal*,const qreal*,quint16)));
-    disconnect(pt_pulseproc, SIGNAL(vpgUpdated(const double*,int)), pt_display, SLOT(updateVPGSignal(const double*,int)));
-    disconnect(pt_pulseproc, SIGNAL(hrUpdated(double,double)), pt_display, SLOT(updateHR(double,double)));
-
-    pt_display->updateVPGSignal(NULL,0);
-
-    _event->accept();
-}
-
 //-----------------------------------------------------------------------------------
 
 void MainWindow::opendeviceresolutiondialog()
@@ -371,6 +377,7 @@ void MainWindow::showPlot()
 
 void MainWindow::saveMeasuremets(double _hr, double _snr)
 {
+    Q_UNUSED(_snr);
     if(m_filename.isEmpty() == false) {
         QFile _file(m_filename);
         if(_file.open(QFile::WriteOnly)) {

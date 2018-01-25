@@ -4,116 +4,116 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="29"/>
+        <location filename="mainwindow.cpp" line="30"/>
         <source>Time, quarter of s</source>
         <translation>Время, четверть секунды</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="29"/>
+        <location filename="mainwindow.cpp" line="30"/>
         <source>Temperature, °C</source>
         <translation>Температура, °C</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="19"/>
+        <location filename="mainwindow.cpp" line="20"/>
         <source>Context menu is available by right click</source>
         <translation>Контектсное меню доступно по правому клику мыши</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="75"/>
+        <location filename="mainwindow.cpp" line="113"/>
         <source>Open &amp;cam</source>
         <translation>Вебкамера</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="76"/>
+        <location filename="mainwindow.cpp" line="114"/>
         <source>Open video capture device</source>
         <translation>Открыть устройство захвата изображений</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="79"/>
+        <location filename="mainwindow.cpp" line="117"/>
         <source>Open &amp;file</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="80"/>
-        <location filename="mainwindow.cpp" line="233"/>
-        <location filename="mainwindow.cpp" line="239"/>
+        <location filename="mainwindow.cpp" line="118"/>
+        <location filename="mainwindow.cpp" line="256"/>
+        <location filename="mainwindow.cpp" line="262"/>
         <source>Open video file</source>
         <translation>Открыть видеофайл</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="83"/>
+        <location filename="mainwindow.cpp" line="121"/>
         <source>&amp;Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="84"/>
+        <location filename="mainwindow.cpp" line="122"/>
         <source>Stop processing</source>
         <translation>Остановить обработку</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="87"/>
+        <location filename="mainwindow.cpp" line="125"/>
         <source>&amp;Resume</source>
         <translation>Рестарт</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="88"/>
+        <location filename="mainwindow.cpp" line="126"/>
         <source>Resume processing</source>
         <translation>Возобновить обработку</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="91"/>
+        <location filename="mainwindow.cpp" line="129"/>
         <source>E&amp;xit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="92"/>
+        <location filename="mainwindow.cpp" line="130"/>
         <source>Exit from app</source>
         <translation>Выйти из приложения</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="95"/>
+        <location filename="mainwindow.cpp" line="133"/>
         <source>&amp;About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="96"/>
+        <location filename="mainwindow.cpp" line="134"/>
         <source>Show application&apos;s about info</source>
         <translation>Показать информацию о приложении</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="99"/>
-        <location filename="mainwindow.cpp" line="147"/>
+        <location filename="mainwindow.cpp" line="137"/>
+        <location filename="mainwindow.cpp" line="185"/>
         <source>&amp;Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="100"/>
+        <location filename="mainwindow.cpp" line="138"/>
         <source>Show the application&apos;s help info</source>
         <translation>Показать справочную информацию</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="103"/>
+        <location filename="mainwindow.cpp" line="141"/>
         <source>&amp;Resolution</source>
         <translation>Разрешение</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="104"/>
+        <location filename="mainwindow.cpp" line="142"/>
         <source>Open video capture device resolution dialog</source>
         <translation>Открыть диалог настройки разрешения видеоизображения</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="107"/>
-        <location filename="mainwindow.cpp" line="137"/>
+        <location filename="mainwindow.cpp" line="145"/>
+        <location filename="mainwindow.cpp" line="175"/>
         <source>&amp;Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="108"/>
+        <location filename="mainwindow.cpp" line="146"/>
         <source>Open video capture device settings dialog</source>
         <translation>Открыть диалог настройки вебкамеры</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="115"/>
+        <location filename="mainwindow.cpp" line="153"/>
         <source>&amp;Temperature</source>
         <translation>Температура</translation>
     </message>
@@ -122,7 +122,7 @@
         <translation type="vanished">Вызвать утилиту для настройки вебкамеры из диалога DirectShow</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="111"/>
+        <location filename="mainwindow.cpp" line="149"/>
         <source>&amp;Open piro</source>
         <translation>Пирометр</translation>
     </message>
@@ -131,52 +131,52 @@
         <translation type="vanished">График</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="119"/>
+        <location filename="mainwindow.cpp" line="157"/>
         <source>&amp;Fullscreen</source>
         <translation>Во весь экран</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="130"/>
+        <location filename="mainwindow.cpp" line="168"/>
         <source>&amp;Devices</source>
         <translation>Устройства</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="141"/>
+        <location filename="mainwindow.cpp" line="179"/>
         <source>D&amp;ata</source>
         <translation>Данные</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="144"/>
+        <location filename="mainwindow.cpp" line="182"/>
         <source>&amp;View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="236"/>
+        <location filename="mainwindow.cpp" line="259"/>
         <source>Can not open file!</source>
         <translation>Файл не открывается</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="239"/>
+        <location filename="mainwindow.cpp" line="262"/>
         <source>Video (*.avi *.mp4, *.wmv)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="258"/>
+        <location filename="mainwindow.cpp" line="281"/>
         <source>Can not open device!</source>
         <translation>Устройство не открывается</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="315"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Can not find help</source>
         <translation>Справка не доступна</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="343"/>
+        <location filename="mainwindow.cpp" line="351"/>
         <source>Can not open device resolution dialog!</source>
         <translation>Не получается открыть диалог настройки разрешения </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
+        <location filename="mainwindow.cpp" line="363"/>
         <source>Can not open device settings dialog!</source>
         <translation>Не получается открыть диалог настройки вебкамеры</translation>
     </message>
@@ -196,39 +196,44 @@
         <translation type="vanished">норма</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="114"/>
-        <location filename="qimagewidget.cpp" line="256"/>
+        <location filename="qimagewidget.cpp" line="68"/>
+        <source>Calibration in progress...</source>
+        <translation>Подождите, идёт калибровка...</translation>
+    </message>
+    <message>
+        <location filename="qimagewidget.cpp" line="129"/>
+        <location filename="qimagewidget.cpp" line="274"/>
         <source>norm</source>
         <translation>норма</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="119"/>
+        <location filename="qimagewidget.cpp" line="134"/>
         <source>fever</source>
         <translation>гипертермия</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="124"/>
+        <location filename="qimagewidget.cpp" line="139"/>
         <source>hypotermia</source>
         <translation>гипотермия</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="128"/>
+        <location filename="qimagewidget.cpp" line="143"/>
         <source>Forehead temperature [°C]: </source>
         <oldsource>Forehead temperature: </oldsource>
-        <translation>Температура лба [°C]:</translation>
+        <translation>Температура лба [°C]: </translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="261"/>
+        <location filename="qimagewidget.cpp" line="279"/>
         <source>tachycardia</source>
         <translation>тахикардия</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="266"/>
+        <location filename="qimagewidget.cpp" line="284"/>
         <source>bradycardia</source>
         <translation>брадикардия</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="270"/>
+        <location filename="qimagewidget.cpp" line="288"/>
         <source> dB</source>
         <translation> дБ</translation>
     </message>
@@ -241,9 +246,9 @@
         <translation type="vanished">уд./мин</translation>
     </message>
     <message>
-        <location filename="qimagewidget.cpp" line="270"/>
+        <location filename="qimagewidget.cpp" line="288"/>
         <source>Heart rate [bpm]: </source>
-        <translation>ЧСС [уд./мин]:</translation>
+        <translation>ЧСС [уд./мин]: </translation>
     </message>
     <message>
         <source>Norm: 31.0...35.6 °C</source>
@@ -325,7 +330,7 @@
 <context>
     <name>QVideoCapture</name>
     <message>
-        <location filename="qvideocapture.cpp" line="117"/>
+        <location filename="qvideocapture.cpp" line="147"/>
         <source>Camcorder resolution</source>
         <translation>Разрешение</translation>
     </message>
@@ -334,7 +339,7 @@
         <translation type="vanished">Настройки</translation>
     </message>
     <message>
-        <location filename="qvideocapture.cpp" line="217"/>
+        <location filename="qvideocapture.cpp" line="248"/>
         <source>Accept</source>
         <translation>Принять</translation>
     </message>
@@ -347,17 +352,17 @@
         <translation type="vanished">По умолчанию</translation>
     </message>
     <message>
-        <location filename="qvideocapture.cpp" line="203"/>
+        <location filename="qvideocapture.cpp" line="234"/>
         <source>Device select dialog</source>
         <translation>Диалог выбора устройства</translation>
     </message>
     <message>
-        <location filename="qvideocapture.cpp" line="205"/>
+        <location filename="qvideocapture.cpp" line="236"/>
         <source>Select device from list</source>
         <translation>Выберите из списка</translation>
     </message>
     <message>
-        <location filename="qvideocapture.cpp" line="219"/>
+        <location filename="qvideocapture.cpp" line="250"/>
         <source>Reject</source>
         <translation>Отклонить</translation>
     </message>

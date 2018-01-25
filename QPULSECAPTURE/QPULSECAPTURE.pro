@@ -8,7 +8,7 @@ QT +=   core widgets gui serialport multimedia
 
 TEMPLATE =  app
 TARGET  =   QPULSECAPTURE # legacy name for compatibility with Maximus
-VERSION =   4.0.0.1
+VERSION =   5.0.0.0
 
 DEFINES +=  APP_NAME=\\\"$${TARGET}\\\" \
             APP_VERS=\\\"$${VERSION}\\\"

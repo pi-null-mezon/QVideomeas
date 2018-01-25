@@ -12,25 +12,25 @@ QFile *p_logfile = NULL;
 
 void logOut(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    QByteArray localMsg = msg.toLocal8Bit();
-    fprintf(stderr, "%s\n", localMsg.constData());
+    Q_UNUSED(context);
+    std::cout << msg.toUtf8().constData() << std::endl;
 
     if(p_logstream) {
             switch (type) {
             case QtDebugMsg:
-                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Debug]: " << localMsg << "\n\r";
+                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Debug]: " << msg << "\n\r";
                 break;
             case QtInfoMsg:
-                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Info]: " << localMsg << "\n\r";
+                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Info]: " << msg << "\n\r";
                 break;
             case QtWarningMsg:
-                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Warning]: " << localMsg << "\n\r";
+                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Warning]: " << msg << "\n\r";
                 break;
             case QtCriticalMsg:
-                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Critical]: " << localMsg << "\n\r";
+                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Critical]: " << msg << "\n\r";
                 break;
             case QtFatalMsg:
-                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Fatal]: " << localMsg << "\n\r";
+                *p_logstream << QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") << " [Fatal]: " << msg << "\n\r";
                 abort();
             }
             p_logstream->flush();

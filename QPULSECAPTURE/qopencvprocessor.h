@@ -50,7 +50,7 @@ private:
     cv::Rect __getMeanFaceRect() const;
 
     bool __isRectInsideField(const cv::Rect &rect, const cv::Rect &outRect, const cv::Rect &inRect) const;
-    cv::Rect __scaleRectfromCenter(const cv::Rect &rect, float scaleX, float scaleY) const;
+    cv::Rect __portionRectfromCenter(const cv::Rect &rect, float portionX, float portionY) const;
 };
 
 //------------------------------------------------------------------------------------------------------

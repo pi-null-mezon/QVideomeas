@@ -41,24 +41,28 @@ public:
 signals:
     void frame_was_captured(const cv::Mat& value); // should be emmited right after a new frame was captured, to use in your own Qt-projects first do qRegisterMetaType<cv::Mat>("cv::Mat")    
     void deviceOpened();
+    void deviceFPSChanged();
+    void fpsMeasured(double _fps);
+    void timerInitialized();
     //------------------------------------------
 
 public slots:
     void initializeTimer();
     //------------------------------------------
     bool openfile(const QString &filename); // this function should to call cv::VideoCapture::open(filename)
-    bool opendevice(int period=33.0); // this function should to call cv::VideoCapture::open(device)
+    bool opendevice(int period=30.0);       // this function should to call cv::VideoCapture::open(device)
     void opendefaultdevice();               // opens default device with id 0 and DEFAULT_FRAME_PERIOD
     bool isOpened();                        // return true if cv::VideoCapture is opened
     bool start();                           // starts the grabbing
     bool resume();                          // starts the grabbing with determined period of time in ms
     bool close();                           // stops the grabbing and closes video file or capturing device
     bool pause();                           // stops the frametimer
-    int open_deviceSelectDialog();          // On success it should return device id for opendevice(...) function, thus you should use it in than way: class_instance->opendevice( device_select_dialog(), some_value )
+    int  open_deviceSelectDialog();          // On success it should return device id for opendevice(...) function, thus you should use it in than way: class_instance->opendevice( device_select_dialog(), some_value )
     bool open_resolutionDialog();           // creates an QDialog instance with video device resolution-controls, should be used as a GUI implementation of the camera controll functions
     bool open_settingsDialog();             // creates an QDialog instance with video device characteristic-controls, should be used as a GUI implementation of the camera controll functions
     //------------------------------------------
-    bool set(int propertyID , double value);// this function should to call cv::VideoCapture::set(propertyID, value)   
+    bool set(int propertyID , double value);// this function should to call cv::VideoCapture::set(propertyID, value)
+    void measureActualFPS(uint _howlong_ms=3000);  // this function should be called to measure actual fps
 
 private:
     cv::VideoCapture m_cvCapture;           // an OpenCV's object for video capturing from video files or cameras

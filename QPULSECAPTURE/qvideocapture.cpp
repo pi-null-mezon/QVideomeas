@@ -6,13 +6,17 @@ frame_was_captured(const cv::Mat& value) signal with determined period of time.
 To stop frame capturing use pause() or close(). Also
 class provides some GUI interface to cv::VideoCapture::set(...) function.
 ------------------------------------------------------------------------------------------------------*/
-
 #include "qvideocapture.h"
+
+#include <QEventLoop>
+#include <QElapsedTimer>
 
 QVideoCapture::QVideoCapture(QObject *parent) :
     QObject(parent),
     device_id(0)
 {
+    qRegisterMetaType<cv::Mat>("cv::Mat");
+    qRegisterMetaType<cv::Rect>("cv::Rect");
 }
 
 bool QVideoCapture::openfile(const QString &filename)
@@ -46,7 +50,7 @@ void QVideoCapture::opendefaultdevice()
         m_cvCapture.set(cv::CAP_PROP_ZOOM, 2.0);
         m_cvCapture.set(cv::CAP_PROP_FRAME_WIDTH, 640);
         m_cvCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 360);
-        m_cvCapture.set(cv::CAP_PROP_FPS, 30);
+        QTimer::singleShot(500, this, SIGNAL(deviceFPSChanged()));
     }
 }
 
@@ -55,10 +59,35 @@ bool QVideoCapture::set(int propertyID, double value)
     return m_cvCapture.set( propertyID, value);
 }
 
+void QVideoCapture::measureActualFPS(uint _howlong_ms)
+{
+    if(m_cvCapture.isOpened() && pt_timer->isActive()) {
+        qInfo("FPS calibration...");
+        QElapsedTimer _et;
+        unsigned int _frames = 0;
+        double _timeelapsed_ms = 0.0;
+        QMetaObject::Connection _tmpmetpobjcon = connect(this, &QVideoCapture::frame_was_captured, [&]() {
+            if(_frames == 0)
+                _et.start();
+            else
+                _timeelapsed_ms = _et.elapsed();
+            _frames++;
+            qInfo("%d) %f ms", _frames, _timeelapsed_ms);
+        });
+
+        QEventLoop _el;
+        QTimer::singleShot(_howlong_ms,&_el,SLOT(quit()));
+        _el.exec();
+        this->disconnect(_tmpmetpobjcon);
+        double _actualfps = 1000.0*(_frames-1)/_timeelapsed_ms;
+        emit fpsMeasured(_actualfps);
+        qInfo("Actual FPS: %f", _actualfps);
+    }
+}
+
 bool QVideoCapture::resume()
 {
-    if( m_cvCapture.isOpened() )
-    {
+    if( m_cvCapture.isOpened() )   {
         pt_timer->start();
         return true;
     }
@@ -172,6 +201,7 @@ bool QVideoCapture::open_resolutionDialog()
                 m_cvCapture.set(cv::CAP_PROP_FRAME_HEIGHT, CBresolution.currentText().section(" x ",1,1).toDouble());
                 m_cvCapture.set(cv::CAP_PROP_FPS, CBframerate.currentText().section(" ",0,0).toDouble());
                 pt_timer->setInterval((int)1000/CBframerate.currentText().section(" ",0,0).toDouble());
+                deviceFPSChanged();
                 return true;
             }
     }
@@ -236,4 +266,5 @@ void QVideoCapture::initializeTimer()
     pt_timer = new QTimer();
     pt_timer->setTimerType(Qt::PreciseTimer);
     connect(pt_timer, SIGNAL( timeout() ), this, SLOT( read_frame() )); // makes a connection between timer signal and class slot
+    emit timerInitialized();
 }

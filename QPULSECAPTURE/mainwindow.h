@@ -41,7 +41,7 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void closeEvent(QCloseEvent *_event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
     bool openvideofile();
@@ -54,10 +54,9 @@ public slots:
     void saveMeasuremets(double _hr, double _snr);
     void setOutputFilename(QString _filename);
 
-protected:
-    void keyPressEvent(QKeyEvent *event);
-
 private slots:
+    void __connectobjects();
+    void __disconnectobjects();
     void __connectToClose();
 
 private:

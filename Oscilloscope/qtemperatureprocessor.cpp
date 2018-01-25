@@ -4,9 +4,9 @@ QTemperatureProcessor::QTemperatureProcessor(QObject *parent, quint16 lengthOfDa
     QObject(parent),
     m_curposObject(0),
     m_curposAmbient(0),
-    m_datalength(lengthOfData),
-    m_symbolsPosition(0),
-    m_afterPointNumbers(0)
+    m_datalength(lengthOfData),   
+    m_afterPointNumbers(0),
+    m_symbolsPosition(0)
 {
     v_objectOutput = new qreal[m_datalength];
     v_ambientOutput = new qreal[m_datalength];
@@ -56,14 +56,14 @@ void QTemperatureProcessor::processData(const QByteArray &input)
                     {
                         emit objtempUpdated(tempValue);
                         v_objectOutput[m_curposObject] = tempValue;
-                        m_curposObject = (++m_curposObject) % m_datalength;
+                        m_curposObject = (m_curposObject+1) % m_datalength;
                         m_objectFlag = false;
                     }
                     else
                     {
                         emit ambtempUpdated(tempValue);
                         v_ambientOutput[m_curposObject] = tempValue;
-                        m_curposAmbient = (++m_curposAmbient) % m_datalength;
+                        m_curposAmbient = (m_curposAmbient+1) % m_datalength;
                     }
                     m_afterPointNumbers = 0;
                     m_symbolsPosition = 0;

@@ -10,51 +10,48 @@ QPulseProcessor::QPulseProcessor(QObject *parent) : QObject(parent)
     pt_faceproc = new vpg::FaceProcessor(cascadefilename);
     if(pt_faceproc->empty()) {
         qCritical("QPulseProcessor: can not load classifier for the face detection!");
-    }
-
-
-    cv::VideoCapture _videocapture;
-    double _frametime = -1.0;
-    if(_videocapture.open(0)) {
-        _videocapture.set(cv::CAP_PROP_ZOOM, 2.0);
-        _videocapture.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-        _videocapture.set(cv::CAP_PROP_FRAME_HEIGHT, 360);
-        _videocapture.set(cv::CAP_PROP_FPS, 30);
-        qInfo("Video source calibration... Please wait...");
-        _frametime = pt_faceproc->measureFramePeriod(&_videocapture);
-    }
-    if(_frametime > 0.0) {
-        qInfo("Video source has been calibrated, frametime %.2f ms", _frametime);
-        pt_pulseproc = new vpg::PulseProcessor(_frametime);
-    } else {
-        qWarning("Video source can not be calibrated for some reasons!");
-        pt_pulseproc = new vpg::PulseProcessor(33.0);
-    }
-
-    m_countslefttoHRcomputetions = pt_pulseproc->getLength();
+    }    
 }
 
 QPulseProcessor::~QPulseProcessor()
 {
+    __releaseMemory();
     delete pt_faceproc;
-    delete pt_pulseproc;
+}
+
+void QPulseProcessor::initialize(double _videofps)
+{
+    double _frametime_ms;
+    if(std::isinf(_videofps)) { // It sometimes appears
+        _frametime_ms = 15.0;
+    } else {
+        _frametime_ms = 1000.0/_videofps;
+    }
+    __releaseMemory();
+    pt_pulseproc = new vpg::PulseProcessor(_frametime_ms);
+    m_countslefttoHRcomputations = pt_pulseproc->getLength();
+    dropTimer();
+    emit initialized();
 }
 
 void QPulseProcessor::enrollFrame(const cv::Mat &_mat)
 {
-    double _value, _time;
-    pt_faceproc->enrollImage(_mat,_value,_time);
+    if(pt_pulseproc != NULL) {
 
-    if(f_inposition) {
-        pt_pulseproc->update(_value, _time);
-        emit vpgUpdated(pt_pulseproc->getSignal(), pt_pulseproc->getLength());
-        m_countslefttoHRcomputetions--;
-        int _count = pt_pulseproc->getLastPos();
-        if( (_count % (pt_pulseproc->getLength()/7) == 0) && m_countslefttoHRcomputetions < 0) {
-            double _hr = pt_pulseproc->computeFrequency();
-            double _snr = pt_pulseproc->getSNR();
-            if(_snr > 3.0) {
-                emit hrUpdated(_hr, _snr);
+        static double _value, _time;
+        pt_faceproc->enrollImage(_mat,_value,_time);
+
+        if(f_inposition) {
+            pt_pulseproc->update(_value, _time);
+            emit vpgUpdated(pt_pulseproc->getSignal(), pt_pulseproc->getLength());
+            m_countslefttoHRcomputations--;
+            int _count = pt_pulseproc->getLastPos();
+            if( (_count % (pt_pulseproc->getLength()/7) == 0) && m_countslefttoHRcomputations < 0) {
+                double _hr = pt_pulseproc->computeFrequency();
+                double _snr = pt_pulseproc->getSNR();
+                if(_snr > 3.0) {
+                    emit hrUpdated(_hr, _snr);
+                }
             }
         }
     }
@@ -73,5 +70,11 @@ void QPulseProcessor::setFaceInPosiiton()
 void QPulseProcessor::setFaceOutOfPosition()
 {
     f_inposition = false;
-    m_countslefttoHRcomputetions = pt_pulseproc->getLength();
+    m_countslefttoHRcomputations = pt_pulseproc->getLength();
+}
+
+void QPulseProcessor::__releaseMemory()
+{
+    delete pt_pulseproc;
+    pt_pulseproc = NULL;
 }
