@@ -67,14 +67,11 @@ void QOpencvProcessor::setRect(const cv::Rect &input_rect)
 void QOpencvProcessor::searchFace(const cv::Mat &img)
 {
     cv::Mat temp;
-    float scaleX = 1.0, scaleY = 1.0;
     cv::Rect centralRegion, faceDestinationRect, outerRect, innerRect;
 
     if( (float)img.cols / img.rows > 14.0 / 9.0) {
         if(img.cols >= 1280 && img.rows >= 720) {
             cv::resize(img, temp, cv::Size(640,360), 0.0, 0.0, CV_INTER_AREA);
-            scaleX = (float) img.cols / 640.0;
-            scaleY = (float) img.rows / 360.0;
         } else {
             temp = img;
         }
@@ -86,8 +83,6 @@ void QOpencvProcessor::searchFace(const cv::Mat &img)
     } else {
         if(img.cols >= 1024 && img.rows >= 768) {
             cv::resize(img, temp, cv::Size(640,480), 0.0, 0.0, CV_INTER_AREA);
-            scaleX = (float) img.cols / 640.0;
-            scaleY = (float) img.rows / 480.0;
         } else {
             temp = img;
         }

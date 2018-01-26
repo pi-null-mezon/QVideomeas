@@ -44,7 +44,7 @@ include(opencv.pri)
 include(opengl.pri)
 include(C:/Programming/vpglib/Shared/vpglib.pri)
 
-CONFIG += designbuild
+#CONFIG += designbuild
 designbuild {
     message("Design build configuration was selected, design paths will be used")
     DEFINES += HAARCASCADES_PATH=\\\"$${OPENCV_DIR}/../sources/data/haarcascades/\\\" \

@@ -8,9 +8,7 @@ QPulseProcessor::QPulseProcessor(QObject *parent) : QObject(parent)
         cascadefilename = std::string(HAARCASCADES_PATH) + std::string("haarcascade_frontalface_alt2.xml");
     #endif
     pt_faceproc = new vpg::FaceProcessor(cascadefilename);
-    if(pt_faceproc->empty()) {
-        qCritical("QPulseProcessor: can not load classifier for the face detection!");
-    }    
+    assert(pt_faceproc->empty() == false); // check if cascade classifier has been loaded
 }
 
 QPulseProcessor::~QPulseProcessor()

@@ -29,6 +29,7 @@ void MainWindow::adjustSettings()
     m_tempplot.setWindowFlags(Qt::Window);
     m_tempplot.set_axis_names(tr("Time, quarter of s"), tr("Temperature, °C"));
     m_tempplot.set_vertical_Borders(29.3, 37.3); // degrees of Celsius
+    m_tempplot.set_tracePen(QPen(Qt::NoBrush,1.5),QColor(50,50,200));
     m_tempplot.setEnableGradient(true);
     m_tempplot.setDrawSecondArray(false);
     //--------------------------------------------------------------
@@ -198,8 +199,7 @@ void MainWindow::createThreads()
     #ifdef HAARCASCADES_PATH // it is debug option
         cascadeFilename = std::string(HAARCASCADES_PATH) + std::string("haarcascade_frontalface_alt2.xml");      
     #endif
-    bool loadResult = pt_opencvProcessor->loadClassifier( cascadeFilename );
-    qWarning("Haarcascade %s was %s", cascadeFilename.c_str(), loadResult ? "loaded" : "not loadeded");
+    assert(pt_opencvProcessor->loadClassifier(cascadeFilename)); // check if classifier has been loaded
     pt_opencvProcessor->moveToThread( pt_improcThread );
     connect(pt_improcThread, SIGNAL(finished()), pt_opencvProcessor, SLOT(deleteLater()));
 

@@ -59,7 +59,7 @@ void QImageWidget::paintEvent(QPaintEvent* )
     } else {
         painter.setRenderHint(QPainter::Antialiasing);
         QPainterPath _path;
-        qreal pointsize = (qreal)rect().height() / 20.0;
+        qreal pointsize = 0.025 * std::sqrt(rect().height()*rect().height() + rect().width()*rect().width()) + 2.0;
         QFont font("Calibry", pointsize, QFont::Bold);
         QPen pen(Qt::NoBrush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         pen.setColor(QColor(0,0,0));
@@ -67,7 +67,7 @@ void QImageWidget::paintEvent(QPaintEvent* )
         painter.setBrush(Qt::white);
         QString _str = tr("Calibration in progress...");
         _path.addText(0,0,font,_str);
-        painter.translate((rect().width() - _str.length()*pointsize),rect().height()/2.0);
+        painter.translate((rect().width() - (_str.length() - 2)*pointsize),rect().height()/2.0);
         painter.setBrush(Qt::white);
         painter.drawPath(_path);
     }
@@ -114,7 +114,7 @@ void QImageWidget::__drawTemperature(QPainter &painter, const QRect &input_rect)
 
     QPainterPath path;
 
-    qreal pointsize = (qreal)input_rect.height() / 30.0;
+    qreal pointsize = 0.02 * std::sqrt(input_rect.height()*input_rect.height() + input_rect.width()*input_rect.width()) + 2.0;
     QFont font("Calibry", pointsize, QFont::DemiBold);
     QPen pen(Qt::NoBrush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     pen.setColor(QColor(0,0,0, _alpha));
@@ -214,16 +214,19 @@ void QImageWidget::__drawStatus(QPainter &painter, const QRect &input_rect)
 {
     QPainterPath path;
 
-    QFont font("Calibry", (qreal)input_rect.height() / 30.0, QFont::DemiBold);
+    qreal fontpointsize = 0.02 * std::sqrt(input_rect.height()*input_rect.height() + input_rect.width()*input_rect.width()) + 2.0;
+
+    QFont font("Calibry", fontpointsize, QFont::DemiBold);
     QPen pen(Qt::NoBrush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     pen.setColor(QColor(0,0,0));
     painter.setPen( pen );
     painter.setBrush(Qt::white);
 
-    path.addText(input_rect.x() + 10, input_rect.y() + input_rect.height() - 20 - font.pointSize()*1.5, font, m_statusString);
+    path.addText(input_rect.x() + 10, input_rect.y() + input_rect.height() - 10 - font.pointSize()*1.5, font, m_statusString);
 
-    font.setPointSize(font.pointSizeF()/2.0);
-    path.addText(input_rect.x() + 10, input_rect.y() + input_rect.height() - 20, font, m_frameproperties);
+    font.setBold(true);
+    font.setPointSize(font.pointSizeF()/1.5);
+    path.addText(input_rect.x() + 10, input_rect.y() + input_rect.height() - 10, font, m_frameproperties);
     painter.drawPath(path);
 }
 
@@ -259,7 +262,7 @@ void QImageWidget::__drawHR(QPainter &painter, const QRect &input_rect)
 
     QPainterPath path;
 
-    qreal pointsize = (qreal)input_rect.height() / 30.0;
+    qreal pointsize = 0.02 * std::sqrt(input_rect.height()*input_rect.height() + input_rect.width()*input_rect.width()) + 2.0;
     QFont font("Calibry", pointsize, QFont::DemiBold);
     QPen pen(Qt::NoBrush, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     pen.setColor(QColor(0,0,0,_alpha));
