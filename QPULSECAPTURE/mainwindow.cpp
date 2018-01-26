@@ -199,7 +199,8 @@ void MainWindow::createThreads()
     #ifdef HAARCASCADES_PATH // it is debug option
         cascadeFilename = std::string(HAARCASCADES_PATH) + std::string("haarcascade_frontalface_alt2.xml");      
     #endif
-    assert(pt_opencvProcessor->loadClassifier(cascadeFilename)); // check if classifier has been loaded
+    bool _has_classifier_been_loaded = pt_opencvProcessor->loadClassifier(cascadeFilename);
+    assert(_has_classifier_been_loaded); // check if classifier has been loaded
     pt_opencvProcessor->moveToThread( pt_improcThread );
     connect(pt_improcThread, SIGNAL(finished()), pt_opencvProcessor, SLOT(deleteLater()));
 
